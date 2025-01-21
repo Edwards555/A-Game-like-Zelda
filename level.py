@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from tile import Tile
 from player import Player
+from debug import debug
 
 class Level:
     def __init__(self):
@@ -30,3 +31,6 @@ class Level:
     def run(self):
         #更新以及绘制游戏
         self.visble_sprites.draw(self.display_surface)
+        self.visble_sprites.update()
+        debug(self.player.direction)
+
