@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
@@ -8,10 +9,11 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
 
         self.direction = pygame.math.Vector2()
+        self.speed = 5
 
     def input(self):
         keys = pygame.key.get_pressed()
-        #上下左右
+        #上下左右s
         if keys[pygame.K_UP]:
             self.direction.y = -1
             print('up')
@@ -27,6 +29,11 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction =  0
 
-        def update(self):
-            self.visble_sprites.draw(self.display_surface)
-            self.visble_sprites.update()
+    def move(self, speed):
+        self.rect.center += self.direction * speed
+	    # self.rect.x += self.direction.x * speed
+        # self.rect.y += self.direction.y * speed
+
+    def update(self):
+        self.input()
+        self.move(self.speed)
