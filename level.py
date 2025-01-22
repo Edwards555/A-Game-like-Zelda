@@ -3,6 +3,7 @@ from settings import *
 from tile import Tile
 from player import Player
 from debug import debug
+from support import *
 
 class Level:
     def __init__(self):
@@ -17,16 +18,22 @@ class Level:
         self.create_map()
 
     def create_map(self):
-        for row_index,row in enumerate(WORLD_MAP):
-            # print(row_index)
-            # print(row)
-            for col_index,col in enumerate(row):
-                x = col_index * TILESIZE
-                y = row_index * TILESIZE
-                if col == 'x':
-                    Tile((x,y),[self.visble_sprites,self.obstacle_sprites])
-                if col == 'p':
-                    self.player = Player((x,y),[self.visble_sprites],self.obstacle_sprites)
+        #生成地图
+        layout = {
+            'boundary': import_csv_layout('../graphics/tilemap/boundary.csv')
+        }
+        for style,layout in layout.items():
+            for row_index,row in enumerate(WORLD_MAP):
+                for col_index,col in enumerate(row):
+                    x = col_index * TILESIZE
+                    y = row_index * TILESIZE
+                if style == 'boundary':
+                    Tile((x,y), [self.visble_sprites,self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
+            #     if col == 'x':
+            #         Tile((x,y),[self.visble_sprites,self.obstacle_sprites])
+            #     if col == 'p':
+                    # self.player = Player((x,y),[self.visble_sprites],self.obstacle_sprites)
+        self.player = Player((x,y),[self.visble_sprites],self.obstacle_sprites)
 
     def run(self):
         #更新以及绘制游戏
