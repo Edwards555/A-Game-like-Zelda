@@ -44,11 +44,21 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.half_width = self.display_surface.get_size()[0] // 2
         self.half_height = self.display_surface.get_size()[1] // 2
 
+        #创造地板
+        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_rect = self.floor_surf.get_rect(topleft=(0,0))
+
     def custom_draw(self,player):
 
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
-        for sprite in self.sprites():
+        # 渲染地板
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surf,floor_offset_pos)
+
+        # for sprite in self.sprites():
+        # 确保靠近屏幕底部的精灵出现在更高位置的精灵前面
+        for sprite in sorted(self.sprites(),key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
