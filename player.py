@@ -3,7 +3,7 @@ from settings import *
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, pos, groups,obstacle_sprites):
         super().__init__(groups)
         self.image = pygame.image.load('C:/Users/86136/Desktop/A Game like Zelda/graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
@@ -11,28 +11,56 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.speed = 5
 
+        self.obstacle_sprites = obstacle_sprites
+
     def input(self):
         keys = pygame.key.get_pressed()
         #上下左右s
         if keys[pygame.K_UP]:
             self.direction.y = -1
-            print('up')
+            #print('up')
         elif keys[pygame.K_DOWN]:
             self.direction.y =  1
-            print('down')
+            #print('down')
         else:
-            self.direction =  0
+            self.direction.y =  0
+            # self.direction = pygame.math.Vector2()
+
         if keys[pygame.K_RIGHT]:
             self.direction.x =  1
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
         else:
-            self.direction =  0
+            self.direction.x =  0
+            # self.direction = pygame.math.Vector2()
 
     def move(self, speed):
-        self.rect.center += self.direction * speed
-	    # self.rect.x += self.direction.x * speed
-        # self.rect.y += self.direction.y * speed
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+
+        # self.rect.center += self.direction * speed
+        self.rect.x += self.direction.x * speed
+        self.collision('horizontal')
+        self.rect.y += self.direction.y * speed
+        self.collision('vertical')
+
+    def collision(self, direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x > 0: # moving right
+                        self.rect.right = sprite.rect.left
+                    if self.direction.x < 0: # moving left
+                        self.rect.left = sprite.rect.right
+
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y > 0: # moving down
+                        self.rect.bottom = sprite.rect.top
+                    if self.direction.y < 0: # moving up
+                        self.rect.top = sprite.rect.bottom
+
 
     def update(self):
         self.input()
