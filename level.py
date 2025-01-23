@@ -20,15 +20,25 @@ class Level:
     def create_map(self):
         #生成地图
         layout = {
-            'boundary': import_csv_layout('../graphics/tilemap/boundary.csv')
+            'boundary': import_csv_layout('../graphics/tilemap/boundary.csv'),
+            'grass': import_csv_layout('../graphics/tilemap/grass.csv'),
+            'ojects': import_csv_layout('../graphics/tilemap/objects.csv'),
         }
         for style,layout in layout.items():
-            for row_index,row in enumerate(WORLD_MAP):
+            for row_index,row in enumerate(layout):
                 for col_index,col in enumerate(row):
-                    x = col_index * TILESIZE
-                    y = row_index * TILESIZE
-                if style == 'boundary':
-                    Tile((x,y), [self.visble_sprites,self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
+                    if col != '-1':
+                        x = col_index * TILESIZE
+                        y = row_index * TILESIZE
+                        if style == 'boundary':
+                            Tile((x,y), [self.visble_sprites,self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
+                        if style == 'grass':
+                            #渲染草皮
+                            pass
+                        if style == 'ojects':
+                            #渲染物体
+                            pass
+                        
             #     if col == 'x':
             #         Tile((x,y),[self.visble_sprites,self.obstacle_sprites])
             #     if col == 'p':
