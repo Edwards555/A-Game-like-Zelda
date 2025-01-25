@@ -4,6 +4,7 @@ from tile import Tile
 from player import Player
 from debug import debug
 from support import *
+from random import choice
 
 class Level:
     def __init__(self):
@@ -24,6 +25,10 @@ class Level:
             'grass': import_csv_layout('../graphics/tilemap/grass.csv'),
             'ojects': import_csv_layout('../graphics/tilemap/objects.csv'),
         }
+        graphics = {
+            'grass': import_folder('../graphics/grass'),
+            'objects': import_folder('../graphics/objects'),
+        }
         for style,layout in layout.items():
             for row_index,row in enumerate(layout):
                 for col_index,col in enumerate(row):
@@ -34,10 +39,11 @@ class Level:
                             Tile((x,y), [self.visble_sprites,self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
                         if style == 'grass':
                             #渲染草皮
-                            pass
-                        if style == 'ojects':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y),[self.visble_sprites],'grass',surface = random_grass_image)
+                        if style == 'objects':
                             #渲染物体
-                            pass
+                            surf = graphics['objects'][int(col)]
                         
             #     if col == 'x':
             #         Tile((x,y),[self.visble_sprites,self.obstacle_sprites])
