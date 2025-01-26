@@ -21,9 +21,9 @@ class Level:
     def create_map(self):
         #生成地图
         layout = {
-            'boundary': import_csv_layout('../graphics/tilemap/boundary.csv'),
-            'grass': import_csv_layout('../graphics/tilemap/grass.csv'),
-            'ojects': import_csv_layout('../graphics/tilemap/objects.csv'),
+            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../map/map_Grass.csv'),
+            'ojects': import_csv_layout('../map/map_Objects.csv'),
         }
         graphics = {
             'grass': import_folder('../graphics/grass'),
@@ -44,7 +44,7 @@ class Level:
                         if style == 'objects':
                             #渲染物体
                             surf = graphics['objects'][int(col)]
-                        
+                            Tile((x,y),[self.visble_sprites,self.obstacle_sprites],'objects',surf)
             #     if col == 'x':
             #         Tile((x,y),[self.visble_sprites,self.obstacle_sprites])
             #     if col == 'p':
@@ -68,7 +68,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.half_height = self.display_surface.get_size()[1] // 2
 
         #创造地板
-        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('C:/Users/86136/Desktop/A Game like Zelda/graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0,0))
 
     def custom_draw(self,player):
