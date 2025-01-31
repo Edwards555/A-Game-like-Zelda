@@ -25,40 +25,41 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
 
     def input(self):
-        keys = pygame.key.get_pressed()
         #上下左右s
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-            self.status = 'up'
-            #print('up')
-        elif keys[pygame.K_DOWN]:
-            self.direction.y =  1
-            self.status = 'down'
-            #print('down')
-        else:
-            self.direction.y =  0
-            # self.direction = pygame.math.Vector2()
-        if keys[pygame.K_RIGHT]:
-            self.direction.x =  1
-            self.status = 'right'
-        elif keys[pygame.K_LEFT]:
-            self.direction.x = -1
-            self.status = 'left'
-        else:
-            self.direction.x =  0
-            # self.direction = pygame.math.Vector2()
+        if not self.attacking:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.direction.y = -1
+                self.status = 'up'
+                #print('up')
+            elif keys[pygame.K_DOWN]:
+                self.direction.y =  1
+                self.status = 'down'
+                #print('down')
+            else:
+                self.direction.y =  0
+                # self.direction = pygame.math.Vector2()
+            if keys[pygame.K_RIGHT]:
+                self.direction.x =  1
+                self.status = 'right'
+            elif keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+            else:
+                self.direction.x =  0
+                # self.direction = pygame.math.Vector2()
 
-        #攻击输入
-        if keys[pygame.K_SPACE] and not self.attacking:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            print('attack')
+            #攻击输入
+            if keys[pygame.K_SPACE]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                print('attack')
 
-        #魔法输入
-        if keys[pygame.K_LCTRL] and not self.attacking:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            print('magic')
+            #魔法输入
+            if keys[pygame.K_LCTRL]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                print('magic')
 
     def get_status(self):
 
@@ -92,14 +93,15 @@ class Player(pygame.sprite.Sprite):
                 self.status = self.status.replace('_magic','')
 
     def import_player_assets(self):
-        character_path = '\graphics\player'
-        self.animation = {'up':[],'down':[],'left':[],'right':[],
-                        'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
-                        'right_attack':[],'left_attack':[],'up_attack':[],'down_attack':[]}
+        character_path = 'graphics\player'
+        self.animations = {'up':[],'down':[],'left':[],'right':[],
+                            'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
+                            'right_attack':[],'left_attack':[],'up_attack':[],'down_attack':[]}
 
-        for animation in self.animation.keys:
-            full_path = character_path  + animation
+        for animation in self.animations.keys:
+            full_path = character_path + animation
             self.animation[animation] = import_folder(full_path)
+            print(self.animation[animation])
         
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -139,7 +141,15 @@ class Player(pygame.sprite.Sprite):
         animation = self.animation[self.status]
 
         self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+            self.frame_index = 0
+        
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center = self.hitbox.center)
+
     def update(self):
         self.input()
         self.cooldowns()
+        self.get_status()
+        self.animate()
         self.move(self.speed)
