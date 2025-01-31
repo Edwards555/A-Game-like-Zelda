@@ -21,13 +21,13 @@ class Level:
     def create_map(self):
         #生成地图
         layout = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../map/map_Grass.csv'),
-            'ojects': import_csv_layout('../map/map_Objects.csv'),
+            'boundary': import_csv_layout('map\map_FloorBlocks.csv'),
+            'grass': import_csv_layout('map\map_Grass.csv'),
+            'ojects': import_csv_layout('map\map_Objects.csv'),
         }
         graphics = {
-            'grass': import_folder('../graphics/grass'),
-            'objects': import_folder('../graphics/objects'),
+            'grass': import_folder('graphics\grass'),
+            'objects': import_folder('graphics\objects'),
         }
         for style,layout in layout.items():
             for row_index,row in enumerate(layout):
@@ -36,11 +36,11 @@ class Level:
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
-                            Tile((x,y), [self.visble_sprites,self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
+                            Tile((x,y), [self.obstacle_sprites],'invisible',surface = pygame.Surface((TILESIZE, TILESIZE)))
                         if style == 'grass':
                             #渲染草皮
                             random_grass_image = choice(graphics['grass'])
-                            Tile((x,y),[self.visble_sprites],'grass',surface = random_grass_image)
+                            Tile((x,y),[self.visble_sprites,self.obstacle_sprites],'grass',surface = random_grass_image)
                         if style == 'objects':
                             #渲染物体
                             surf = graphics['objects'][int(col)]
@@ -53,7 +53,7 @@ class Level:
 
     def run(self):
         #更新以及绘制游戏
-        self.visble_sprites.custom.draw(self.player)
+        self.visble_sprites.custom_draw(self.player)
         self.visble_sprites.update()
         debug(self.player.direction)
 
