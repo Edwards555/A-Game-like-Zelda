@@ -11,6 +11,9 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
+        self.attacking = False
+        self.attack_cooldown = 0
+        self.attack_time = None
 
         self.obstacle_sprites = obstacle_sprites
 
@@ -26,7 +29,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.y =  0
             # self.direction = pygame.math.Vector2()
-
         if keys[pygame.K_RIGHT]:
             self.direction.x =  1
         elif keys[pygame.K_LEFT]:
@@ -34,6 +36,16 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x =  0
             # self.direction = pygame.math.Vector2()
+
+        #攻击输入
+        if keys[pygame.K_SPACE] and not self.attacking:
+            self.attacking = True
+            print('attack')
+
+        #魔法输入
+        if keys[pygame.K_LCTRL] and not self.attacking:
+            self.attacking = True
+            print('magic')
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -63,7 +75,12 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
 
-
+    def cooldowns(self):
+        current_time = pygame.time.get_ticks()
+        if self.attacking:
+            if current_time - self.attack_time >= 300:
+                self.attacking = False
+                self.attack_time = None
     def update(self):
         self.input()
         self.move(self.speed)
